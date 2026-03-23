@@ -1,0 +1,49 @@
+===========================================
+Pipe-delimited variable reference
+===========================================
+◊|author-en|
+---
+(source_file
+  (pipe_expression))
+
+===========================================
+Pipe-delimited variable inside HTML
+===========================================
+<name>◊|author-en|</name>
+---
+(source_file
+  (text)
+  (pipe_expression)
+  (text))
+
+===========================================
+Pipe-delimited expression (computed value)
+===========================================
+margin: ◊|(* inner 2)|em;
+---
+(source_file
+  (text)
+  (pipe_expression)
+  (text))
+
+===========================================
+Bare variable reference
+===========================================
+The author is ◊author.
+---
+(source_file
+  (text)
+  (bare_variable_ref
+    (tag_name))
+  (text))
+
+===========================================
+Bare variable reference adjacent to punctuation
+===========================================
+Next is ◊pi.
+---
+(source_file
+  (text)
+  (bare_variable_ref
+    (tag_name))
+  (text))

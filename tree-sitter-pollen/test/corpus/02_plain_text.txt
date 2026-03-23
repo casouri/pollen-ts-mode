@@ -1,0 +1,31 @@
+===========================================
+Single line of text
+===========================================
+#lang pollen
+Hello, world.
+---
+(source_file
+  (lang_line)
+  (text))
+
+===========================================
+Multiple lines
+===========================================
+#lang pollen
+Line one.
+Line two.
+---
+(source_file
+  (lang_line)
+  (text)
+  (text))
+
+===========================================
+Unicode text
+===========================================
+#lang pollen
+这是中文。日本語のテキスト。
+---
+(source_file
+  (lang_line)
+  (text))

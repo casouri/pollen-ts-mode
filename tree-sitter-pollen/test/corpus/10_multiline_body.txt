@@ -1,0 +1,27 @@
+===========================================
+Multi-line tag body
+===========================================
+◊bquote{
+First line.
+Second line.
+Third line.
+}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (tag_body
+      (body_text))))
+
+===========================================
+Inline expression in paragraph
+===========================================
+The tree-sitter integration is ◊em{settled} and works well.
+---
+(source_file
+  (text)
+  (tag_expression
+    (tag_name)
+    (tag_body
+      (body_text)))
+  (text))

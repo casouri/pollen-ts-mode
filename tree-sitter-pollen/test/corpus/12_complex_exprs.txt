@@ -1,0 +1,25 @@
+===========================================
+Multi-line racket expression
+===========================================
+◊(->html (footer (get-language "en") doc
+  (or (select 'title doc) "No title")
+  #:rss "/note/atom.xml"))
+---
+(source_file
+  (racket_expression))
+
+===========================================
+Racket expression with quoted strings containing parens
+===========================================
+◊(link "https://example.com/page(1)" "title")
+---
+(source_file
+  (racket_expression))
+
+===========================================
+define-meta as racket expression
+===========================================
+◊(define-meta rss-mode "yay")
+---
+(source_file
+  (racket_expression))

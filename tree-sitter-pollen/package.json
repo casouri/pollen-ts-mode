@@ -1,0 +1,24 @@
+{
+  "name": "tree-sitter-pollen",
+  "version": "0.1.0",
+  "description": "Tree-sitter grammar for the Pollen publishing language",
+  "main": "bindings/node",
+  "scripts": {
+    "build": "tree-sitter generate",
+    "test": "tree-sitter test",
+    "parse": "tree-sitter parse"
+  },
+  "dependencies": {
+    "nan": "^2.18.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "latest"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.pollen",
+      "file-types": ["pm", "pp", "p"],
+      "injection-regex": "pollen"
+    }
+  ]
+}

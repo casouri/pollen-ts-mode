@@ -1,0 +1,39 @@
+===========================================
+Simple function call
+===========================================
+◊(rfc3339)
+---
+(source_file
+  (racket_expression))
+
+===========================================
+Function call with argument
+===========================================
+◊(->html doc)
+---
+(source_file
+  (racket_expression))
+
+===========================================
+Function call with string argument
+===========================================
+◊(->html (note-feed-entry "2025/boritina"))
+---
+(source_file
+  (racket_expression))
+
+===========================================
+require expression
+===========================================
+◊(require "pollen.rkt" pollen/template)
+---
+(source_file
+  (racket_expression))
+
+===========================================
+define-meta as racket expression
+===========================================
+◊(define-meta rss-mode "yay")
+---
+(source_file
+  (racket_expression))

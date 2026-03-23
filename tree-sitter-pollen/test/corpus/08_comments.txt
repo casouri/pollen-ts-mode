@@ -1,0 +1,42 @@
+===========================================
+Line comment
+===========================================
+◊; this entire line is ignored
+◊em{visible}
+---
+(source_file
+  (comment
+    (line_comment))
+  (tag_expression
+    (tag_name)
+    (tag_body
+      (body_text))))
+
+===========================================
+Block comment
+===========================================
+◊;{This is a comment}
+---
+(source_file
+  (comment
+    (block_comment)))
+
+===========================================
+Expression comment
+===========================================
+◊;(->html (like-button))
+---
+(source_file
+  (comment
+    (expr_comment)))
+
+===========================================
+Expression comment from template
+===========================================
+◊;(->html (like-button))
+◊(->html (footer doc))
+---
+(source_file
+  (comment
+    (expr_comment))
+  (racket_expression))

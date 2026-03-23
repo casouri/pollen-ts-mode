@@ -1,0 +1,29 @@
+===========================================
+Empty tag
+===========================================
+◊sep{}
+---
+(source_file
+  (tag_expression
+    (tag_name)))
+
+===========================================
+Empty tag with no preceding lang line
+===========================================
+◊smile{}
+---
+(source_file
+  (tag_expression
+    (tag_name)))
+
+===========================================
+Multiple empty tags
+===========================================
+◊sep{}
+◊br{}
+---
+(source_file
+  (tag_expression
+    (tag_name))
+  (tag_expression
+    (tag_name)))

@@ -1,0 +1,30 @@
+===========================================
+HTML attribute with Pollen expression
+===========================================
+<html lang="◊(get-language "en")">
+---
+(source_file
+  (text)
+  (racket_expression)
+  (text))
+
+===========================================
+Full template snippet
+===========================================
+<title>◊(->html (select 'title doc))</title>
+---
+(source_file
+  (text)
+  (racket_expression)
+  (text))
+
+===========================================
+Comment inside template
+===========================================
+◊;(->html (like-button))
+◊(->html (footer doc))
+---
+(source_file
+  (comment
+    (expr_comment))
+  (racket_expression))

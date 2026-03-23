@@ -1,0 +1,91 @@
+===========================================
+define-meta with symbol attr
+===========================================
+◊define-meta[date]{2025-07-12}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (attr_block
+      (attr_symbol))
+    (tag_body
+      (body_text))))
+
+===========================================
+link with string attr
+===========================================
+◊link["https://example.com"]{click here}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (attr_block
+      (attr_string))
+    (tag_body
+      (body_text))))
+
+===========================================
+fnref with string attr
+===========================================
+◊fnref["comp-doc"]{complement of the documentation}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (attr_block
+      (attr_string))
+    (tag_body
+      (body_text))))
+
+===========================================
+keyword attribute — single pair
+===========================================
+◊span[#:class "author"]{Prof. Leonard}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (attr_block
+      (attr_keyword_pair
+        (attr_keyword)
+        (attr_string)))
+    (tag_body
+      (body_text))))
+
+===========================================
+keyword attributes — multiple pairs
+===========================================
+◊span[#:class "author" #:id "primary" #:living "true"]{Prof. Leonard}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (attr_block
+      (attr_keyword_pair
+        (attr_keyword)
+        (attr_string))
+      (attr_keyword_pair
+        (attr_keyword)
+        (attr_string))
+      (attr_keyword_pair
+        (attr_keyword)
+        (attr_string)))
+    (tag_body
+      (body_text))))
+
+===========================================
+verbose quoted attr list
+===========================================
+◊span['((class "author")(id "primary"))]{Prof. Leonard}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (attr_block
+      (attr_quoted_list
+        (attr_symbol)
+        (attr_string)
+        (attr_symbol)
+        (attr_string)))
+    (tag_body
+      (body_text))))

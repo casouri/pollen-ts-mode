@@ -1,0 +1,32 @@
+===========================================
+Tag with simple text body
+===========================================
+◊em{emphasized text}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (tag_body
+      (body_text))))
+
+===========================================
+Tag with body containing spaces
+===========================================
+◊sc{SMALL CAPS}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (tag_body
+      (body_text))))
+
+===========================================
+Section tag
+===========================================
+◊section{Narrowing and lazy parsing}
+---
+(source_file
+  (tag_expression
+    (tag_name)
+    (tag_body
+      (body_text))))
