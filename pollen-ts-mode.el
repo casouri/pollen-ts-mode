@@ -32,6 +32,22 @@
   :safe 'integerp
   :group 'pollen-ts)
 
+(defcustom pollen-ts-header-tag-regexp-list
+  (list (rx bos "section" eos)
+        (rx bos "subsection" eos))
+  "List of regexps matching tag names for header levels 1 through 6.
+Each element corresponds to one outline level.  The tag body is
+fontified with the corresponding `outline-N' face."
+  :type '(repeat regexp)
+  :group 'pollen-ts)
+
+(defcustom pollen-ts-code-tag-regexp
+  (rx bos (or "code" "bcode" "bcode-hl") eos)
+  "Regexp matching tag names whose body should be rendered in monospace.
+Matched against the text of `tag_name' nodes in the parse tree."
+  :type 'regexp
+  :group 'pollen-ts)
+
 ;;; Syntax table
 
 (defvar pollen-ts-mode--syntax-table
@@ -62,54 +78,94 @@
      (no-node parent-bol 0)))
   "Tree-sitter indent rules for `pollen-ts-mode'.")
 
+;;; Faces
+
+(defface pollen-ts-mode-code-face
+  '((t :inherit fixed-pitch))
+  "Face for the body of code tags (◊code, ◊bcode, ◊bcode-hl)."
+  :group 'pollen-ts)
+
 ;;; Font-lock
+
+(defun pollen-ts-mode--header-font-lock-rules ()
+  "Generate font-lock rules for header tags based on `pollen-ts-header-tag-regexp-list'."
+  (let ((faces [outline-1 outline-2 outline-3 outline-4 outline-5 outline-6])
+        (idx 0)
+        rules)
+    (dolist (regexp pollen-ts-header-tag-regexp-list)
+      (when (< idx 6)
+        (push `(:language pollen
+                :feature header
+                :override append
+                ((tag_expression
+                  name: (tag_name) @_name
+                  body: (tag_body) @,(aref faces idx)
+                  (:match ,regexp @_name))))
+              rules))
+      (setq idx (1+ idx)))
+    (nreverse rules)))
 
 (defvar pollen-ts-mode--font-lock-settings
   (when (treesit-available-p)
-    (treesit-font-lock-rules
-     :language 'pollen
-     :feature 'comment
-     '([(line_comment) (block_comment) (expr_comment)]
-       @font-lock-comment-face)
+    (apply
+     #'treesit-font-lock-rules
+     (append
+      (list
+       :language 'pollen
+       :feature 'comment
+       '([(line_comment) (block_comment) (expr_comment)]
+         @font-lock-comment-face)
 
-     :language 'pollen
-     :feature 'lang-line
-     '((lang_line) @font-lock-preprocessor-face)
+       :language 'pollen
+       :feature 'lang-line
+       '((lang_line) @font-lock-preprocessor-face)
 
-     :language 'pollen
-     :feature 'tag-name
-     '((tag_expression
-        name: (tag_name) @font-lock-function-call-face)
-       (bare_variable_ref
-        name: (tag_name) @font-lock-variable-use-face))
+       :language 'pollen
+       :feature 'tag-name
+       '((tag_expression
+          name: (tag_name) @font-lock-function-call-face)
+         (bare_variable_ref
+          name: (tag_name) @font-lock-variable-use-face))
 
-     :language 'pollen
-     :feature 'attribute
-     '((attr_keyword) @font-lock-property-name-face
-       (attr_symbol) @font-lock-constant-face
-       (attr_keyword_pair
-        value: (attr_string) @font-lock-string-face)
-       (attr_block
-        (attr_string) @font-lock-string-face))
+       :language 'pollen
+       :feature 'attribute
+       '((attr_keyword) @font-lock-property-name-face
+         (attr_symbol) @font-lock-constant-face
+         (attr_keyword_pair
+          value: (attr_string) @font-lock-string-face)
+         (attr_block
+          (attr_string) @font-lock-string-face))
 
-     :language 'pollen
-     :feature 'expression
-     '((racket_expression) @font-lock-keyword-face
-       (pipe_expression) @font-lock-variable-use-face)
+       :language 'pollen
+       :feature 'expression
+       '((racket_expression) @font-lock-keyword-face
+         (pipe_expression) @font-lock-variable-use-face)
 
-     :language 'pollen
-     :feature 'delimiter
-     :override t
-     '("◊" @font-lock-punctuation-face
-       "{" @font-lock-bracket-face
-       "}" @font-lock-bracket-face
-       "[" @font-lock-bracket-face
-       "]" @font-lock-bracket-face)))
+       :language 'pollen
+       :feature 'code
+       :override 'append
+       `((tag_expression
+          name: (tag_name) @_name
+          body: (tag_body) @pollen-ts-mode-code-face
+          (:match ,pollen-ts-code-tag-regexp @_name))))
+
+      ;; Header rules (one per level)
+      (apply #'append (pollen-ts-mode--header-font-lock-rules))
+
+      (list
+       :language 'pollen
+       :feature 'delimiter
+       :override t
+       '("◊" @font-lock-punctuation-face
+         "{" @font-lock-bracket-face
+         "}" @font-lock-bracket-face
+         "[" @font-lock-bracket-face
+         "]" @font-lock-bracket-face)))))
   "Tree-sitter font-lock settings for `pollen-ts-mode'.")
 
 (defvar pollen-ts-mode--font-lock-feature-list
   '((comment lang-line)
-    (tag-name attribute expression)
+    (tag-name attribute expression code header)
     (delimiter)
     ())
   "Tree-sitter font-lock feature list for `pollen-ts-mode'.")
