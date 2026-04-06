@@ -21,6 +21,7 @@
 (require 'seq)
 (eval-when-compile (require 'rx))
 (treesit-declare-unavailable-functions)
+(require 'markdown-ts-mode) ; For some vars.
 
 (defgroup pollen-ts nil
   "Major mode for editing Pollen code."
@@ -105,27 +106,7 @@ Keys are strings (as written in the Pollen attr), values are
 tree-sitter language symbols.")
 
 (defvar pollen-ts-code-block-source-mode-map
-  '((bash . bash-ts-mode)
-    (c . c-ts-mode)
-    (c-sharp . csharp-ts-mode)
-    (cmake . cmake-ts-mode)
-    (cpp . c++-ts-mode)
-    (css . css-ts-mode)
-    (dockerfile . dockerfile-ts-mode)
-    (elixir . elixir-ts-mode)
-    (go . go-ts-mode)
-    (html . html-ts-mode)
-    (java . java-ts-mode)
-    (javascript . js-ts-mode)
-    (json . json-ts-mode)
-    (lua . lua-ts-mode)
-    (python . python-ts-mode)
-    (ruby . ruby-ts-mode)
-    (rust . rust-ts-mode)
-    (toml . toml-ts-mode)
-    (tsx . tsx-ts-mode)
-    (typescript . typescript-ts-mode)
-    (yaml . yaml-ts-mode))
+  markdown-ts-code-block-source-mode-map
   "Alist mapping tree-sitter languages to their major modes.")
 
 (defvar-local pollen-ts--configured-languages nil
@@ -146,7 +127,13 @@ Return a plist with :font-lock, :simple-indent, and :range."
     (ignore language)
     (setq treesit-font-lock-settings
           (append treesit-font-lock-settings
-                  (plist-get configs :font-lock)))
+                  ;; Change every setting to :override 'append.
+                  (seq-map
+                   (lambda (setting)
+                     (let ((new (copy-tree setting)))
+                       (setf (nth 3 new) 'append)
+                       new))
+                   (plist-get configs :font-lock))))
     (setq treesit-range-settings
           (append treesit-range-settings
                   ;; Filter out function queries since they’re usually
@@ -283,12 +270,13 @@ Returns a list of `treesit-font-lock-rules' settings based on
      '((racket_expression) @pollen-ts-mode-code-face
        (pipe_expression) @pollen-ts-mode-code-face)
 
-     ;; :language 'pollen
-     ;; :feature 'code
-     ;; `(((tag_expression
-     ;;     name: (tag_name) @_name
-     ;;     body: (tag_body) @pollen-ts-mode-code-face)
-     ;;    (:match ,pollen-ts-code-tag-regexp @_name)))
+     :language 'pollen
+     :feature 'code
+     :override 'append
+     `(((tag_expression
+         name: (tag_name) @_name
+         body: (tag_body) @pollen-ts-mode-code-face)
+        (:match ,pollen-ts-code-tag-regexp @_name)))
 
      :language 'pollen
      :feature 'delimiter
