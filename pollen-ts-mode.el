@@ -295,9 +295,25 @@ Returns a list of `treesit-font-lock-rules' settings based on
     ())
   "Tree-sitter font-lock feature list for `pollen-ts-mode'.")
 
+;;; Commands
+
+(defun pollen-ts-insert-command-char ()
+  "Insert the lozenge ◊ or, if the preceding character is ◊, replace it with @."
+  (interactive)
+  (if (and (> (point) (point-min))
+           (char-equal (char-before) ?◊))
+      (progn
+        (delete-char -1)
+        (insert "@"))
+    (insert "◊")))
+
 ;;; Mode definition
 
 ;;;###autoload
+(defvar-keymap pollen-ts-mode-map
+  :doc "Keymap for `pollen-ts-mode'."
+  "@" #'pollen-ts-insert-command-char)
+
 (define-derived-mode pollen-ts-mode text-mode "Pollen"
   "Major mode for editing Pollen files, powered by tree-sitter."
   :group 'pollen-ts
